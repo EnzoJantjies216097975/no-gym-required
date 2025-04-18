@@ -1,20 +1,61 @@
+// App.tsx
+import React from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
+
+// Import screens
+import DashboardScreen from './src/screens/dashboard/DashboardScreen';
+import ExerciseLibraryScreen from './src/screens/exercises/ExerciseLibraryScreen';
+import WorkoutScreen from './src/screens/workouts/WorkoutScreen';
+import NutritionScreen from './src/screens/nutrition/NutritionScreen';
+import ProfileScreen from './src/screens/profile/ProfileScreen';
+
+// Import DataProvider
+import { DataProvider } from './src/store/DataContext';
+
+const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+    <SafeAreaProvider>
+      <DataProvider>
+        <NavigationContainer>
+          <Tab.Navigator
+            screenOptions={({ route }) => ({
+              tabBarIcon: ({ focused, color, size }) => {
+                let iconName;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+                if (route.name === 'Dashboard') {
+                  iconName = focused ? 'home' : 'home-outline';
+                } else if (route.name === 'Exercises') {
+                  iconName = focused ? 'fitness' : 'fitness-outline';
+                } else if (route.name === 'Workouts') {
+                  iconName = focused ? 'barbell' : 'barbell-outline';
+                } else if (route.name === 'Nutrition') {
+                  iconName = focused ? 'nutrition' : 'nutrition-outline';
+                } else if (route.name === 'Profile') {
+                  iconName = focused ? 'person' : 'person-outline';
+                }
+
+                return <Ionicons name={iconName} size={size} color={color} />;
+              },
+              tabBarActiveTintColor: '#3498db',
+              tabBarInactiveTintColor: 'gray',
+              headerShown: true
+            })}
+          >
+            <Tab.Screen name="Dashboard" component={DashboardScreen} />
+            <Tab.Screen name="Exercises" component={ExerciseLibraryScreen} />
+            <Tab.Screen name="Workouts" component={WorkoutScreen} />
+            <Tab.Screen name="Nutrition" component={NutritionScreen} />
+            <Tab.Screen name="Profile" component={ProfileScreen} />
+          </Tab.Navigator>
+        </NavigationContainer>
+        <StatusBar style="auto" />
+      </DataProvider>
+    </SafeAreaProvider>
+  );
+};
