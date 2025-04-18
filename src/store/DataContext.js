@@ -21,8 +21,10 @@ export const DataProvider = ({ children }) => {
 
   // Load initial data
   useEffect(() => {
+    console.log('DataProvider useEffect running');
     const loadInitialData = async () => {
       try {
+        console.log('Starting to load initial data');
         setIsLoading(true);
         
         // Load user profile
@@ -51,6 +53,7 @@ export const DataProvider = ({ children }) => {
         startDate.setDate(startDate.getDate() - 30);
         const stats = await dataManager.calculateWorkoutStats(startDate.toISOString(), endDate);
         setWorkoutStats(stats);
+        console.log('Data loading complete');
       } catch (error) {
         console.error('Error loading initial data:', error);
       } finally {
@@ -259,6 +262,17 @@ export const DataProvider = ({ children }) => {
     // Direct access to data manager for advanced operations
     dataManager,
   };
+
+  if (isLoading) {
+    console.log('DataProvider is loading');
+    // Return a simple View instead of null
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Loading data...</Text>
+      </View>
+    );
+  }
+  console.log('DataProvider rendering children');
   
   return (
     <DataContext.Provider value={contextValue}>

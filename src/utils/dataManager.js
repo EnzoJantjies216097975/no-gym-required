@@ -246,8 +246,10 @@ const dataManager = {
    * @returns {Promise<Object|null>} - User profile object or null if not found
    */
   async getUserProfile() {
+    console.log('Getting user profile');
     try {
       const profileString = await AsyncStorage.getItem(STORAGE_KEYS.USER_PROFILE);
+      console.log('Profile string:', profileString ? 'Found' : 'Not found');
       
       if (!profileString) {
         // Return default profile for initial app usage
