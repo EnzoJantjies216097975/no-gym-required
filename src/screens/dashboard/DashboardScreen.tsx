@@ -1,6 +1,6 @@
 // src/screens/dashboard/DashboardScreen.tsx
-import React from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
+import React, {useState, useEffect } from 'react';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -139,7 +139,7 @@ return (
             <Text style={styles.statLabel}>Workouts</Text>
           </View>
           <View style={styles.statItem}>
-            <Ionicons name="nutrition" size={24} color="#f39c12" />
+            <Ionicons name="time" size={24} color="#f39c12" />
             <Text style={styles.statNumber}>{workoutStats?.totalDuration || 0}</Text>
             <Text style={styles.statLabel}>Minutes</Text>
           </View>
@@ -181,7 +181,7 @@ return (
             ))}
             <TouchableOpacity 
               style={styles.viewAllButton}
-              onPress={() => navigation.navigate('Profile', { screen: 'ProgressTracking' })}
+              onPress={() => navigation.navigate('Profile')}
             >
               <Text style={styles.viewAllButtonText}>View All Activity</Text>
             </TouchableOpacity>
@@ -215,7 +215,7 @@ return (
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.quickActionButton}
-              onPress={() => navigation.navigate('Profile', { screen: 'ProgressTracking' })}
+              onPress={() => navigation.navigate('Profile')}
             >
               <Ionicons name="trending-up" size={24} color="#3498db" />
               <Text style={styles.quickActionText}>View Progress</Text>
@@ -488,6 +488,10 @@ const styles = StyleSheet.create({
   },
   startButtonText: {
     color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  quickActionText: {
     fontSize: 16,
     fontWeight: 'bold',
   },
