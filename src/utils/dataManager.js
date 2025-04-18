@@ -132,4 +132,16 @@ class DataManager {
       });
       
       // Save updated progress
-      await AsyncStorage.setItem(
+    await AsyncStorage.setItem(
+      STORAGE_KEYS.EXERCISE_PROGRESS, 
+      JSON.stringify(existingProgress)
+    );
+    
+    console.log('Exercise progress saved successfully:', exerciseData);
+    return true;
+    } catch (error) {
+      console.error('Error saving exercise progress:', error);
+      return false;
+    }
+  }
+}

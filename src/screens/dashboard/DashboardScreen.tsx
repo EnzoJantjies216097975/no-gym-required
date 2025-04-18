@@ -87,160 +87,6 @@ const DashboardScreen = ({ navigation }) => {
     const options = { weekday: 'long', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
   };
-
-  return (
-    <ScrollView style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>return (
-    <ScrollView 
-      style={[styles.container, { paddingTop: insets.top }]}
-      contentContainerStyle={isLoading ? styles.loadingContainer : null}
-    >
-      {isLoading ? (
-        <ActivityIndicator size="large" color="#3498db" />
-      ) : (
-        <>
-          <View style={styles.header}>
-            <Text style={styles.greeting}>
-              Hello, {userProfile?.name || 'Fitness Warrior'}!
-            </Text>
-            <Text style={styles.date}>{formatDate(new Date().toISOString())}</Text>
-          </View>
-          
-          {/* Motivational Quote */}
-          <View style={styles.quoteContainer}>
-            <Text style={styles.quote}>"{randomQuote}"</Text>
-            <Text style={styles.quoteSource}>- Men's Health: No Gym Required</Text>
-          </View>
-          
-          {/* Streak and Progress */}
-          <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
-              <Ionicons name="flame" size={24} color="#e74c3c" />
-              <Text style={styles.statNumber}>{workoutStats?.streak || 0}</Text>
-              <Text style={styles.statLabel}>Day Streak</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Ionicons name="checkmark-circle" size={24} color="#2ecc71" />
-              <Text style={styles.statNumber}>{workoutStats?.totalWorkouts || 0}</Text>
-              <Text style={styles.statLabel}>Workouts</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Ionicons name="nutrition" size={24} color="#f39c12" />
-              <Text style={styles.statNumber}>{workoutStats?.totalDuration || 0}</Text>
-              <Text style={styles.statLabel}>Minutes</Text>
-            </View>
-          </View>
-          
-          {/* Next Workout */}
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Next Workout</Text>
-            <TouchableOpacity 
-              style={styles.workoutCard}
-              onPress={() => navigation.navigate('Workouts')}
-            >
-              <View style={styles.workoutCardContent}>
-                <Ionicons name="barbell-outline" size={32} color="#3498db" />
-                <View style={styles.workoutCardText}>
-                  <Text style={styles.workoutCardTitle}>{nextWorkout}</Text>
-                  <Text style={styles.workoutCardSubtitle}>30 minutes • Intermediate</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={24} color="#95a5a6" />
-              </View>
-            </TouchableOpacity>
-          </View>
-          
-          {/* Recent Activity */}
-          {workoutHistory.length > 0 && (
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Recent Activity</Text>
-              {workoutHistory.slice(0, 3).map((workout, index) => (
-                <View key={index} style={styles.activityItem}>
-                  <View style={[styles.activityTypeIndicator, { backgroundColor: getWorkoutTypeColor(workout.type) }]} />
-                  <View style={styles.activityContent}>
-                    <Text style={styles.activityTitle}>{workout.name}</Text>
-                    <Text style={styles.activitySubtitle}>
-                      {workout.duration} minutes • {formatDate(workout.timestamp)}
-                    </Text>
-                  </View>
-                  <Text style={styles.activityStatus}>Completed</Text>
-                </View>
-              ))}
-              <TouchableOpacity 
-                style={styles.viewAllButton}
-                onPress={() => navigation.navigate('Profile', { screen: 'ProgressTracking' })}
-              >
-                <Text style={styles.viewAllButtonText}>View All Activity</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          
-          {/* Quick Actions */}
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Quick Actions</Text>
-            <View style={styles.quickActionsContainer}>
-              <TouchableOpacity 
-                style={styles.quickActionButton}
-                onPress={() => navigation.navigate('Exercises')}
-              >
-                <Ionicons name="search" size={24} color="#3498db" />
-                <Text style={styles.quickActionText}>Find Exercise</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.quickActionButton}
-                onPress={() => navigation.navigate('Workouts')}
-              >
-                <Ionicons name="play" size={24} color="#3498db" />
-                <Text style={styles.quickActionText}>Start Workout</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.quickActionButton}
-                onPress={() => navigation.navigate('Nutrition')}
-              >
-                <Ionicons name="restaurant" size={24} color="#3498db" />
-                <Text style={styles.quickActionText}>Log Meal</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.quickActionButton}
-                onPress={() => navigation.navigate('Profile', { screen: 'ProgressTracking' })}
-              >
-                <Ionicons name="trending-up" size={24} color="#3498db" />
-                <Text style={styles.quickActionText}>View Progress</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          
-          {/* Featured Program */}
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Featured Program</Text>
-            <TouchableOpacity 
-              style={styles.featuredProgramCard}
-              onPress={() => navigation.navigate('Workouts')}
-            >
-              <View style={styles.featuredProgramBanner}>
-                <Text style={styles.featuredProgramBannerText}>Summer Body Challenge</Text>
-              </View>
-              <View style={styles.featuredProgramContent}>
-                <Text style={styles.featuredProgramDescription}>
-                  30 days of progressive body-weight workouts to transform your physique.
-                </Text>
-                <View style={styles.featuredProgramStats}>
-                  <Text style={styles.featuredProgramStat}>30 days</Text>
-                  <Text style={styles.featuredProgramStat}>15-60 min/day</Text>
-                  <Text style={styles.featuredProgramStat}>All levels</Text>
-                </View>
-                <TouchableOpacity style={styles.startButton}>
-                  <Text style={styles.startButtonText}>Start Program</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </>
-      )
-      }
-      </ScrollView>
-    </View>)
-    </ScrollView>
-  );
   
   // Helper function to get color based on workout type
 const getWorkoutTypeColor = (type) => {
@@ -256,6 +102,156 @@ const getWorkoutTypeColor = (type) => {
     default:
       return '#95a5a6';
   }
+};
+
+return (
+  <ScrollView 
+    style={[styles.container, { paddingTop: insets.top }]}
+    contentContainerStyle={isLoading ? styles.loadingContainer : null}
+  >
+    {isLoading ? (
+      <ActivityIndicator size="large" color="#3498db" />
+    ) : (
+      <>
+        <View style={styles.header}>
+          <Text style={styles.greeting}>
+            Hello, {userProfile?.name || 'Fitness Warrior'}!
+          </Text>
+          <Text style={styles.date}>{formatDate(new Date().toISOString())}</Text>
+        </View>
+        
+        {/* Motivational Quote */}
+        <View style={styles.quoteContainer}>
+          <Text style={styles.quote}>"{randomQuote}"</Text>
+          <Text style={styles.quoteSource}>- Men's Health: No Gym Required</Text>
+        </View>
+        
+        {/* Streak and Progress */}
+        <View style={styles.statsContainer}>
+          <View style={styles.statItem}>
+            <Ionicons name="flame" size={24} color="#e74c3c" />
+            <Text style={styles.statNumber}>{workoutStats?.streak || 0}</Text>
+            <Text style={styles.statLabel}>Day Streak</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Ionicons name="checkmark-circle" size={24} color="#2ecc71" />
+            <Text style={styles.statNumber}>{workoutStats?.totalWorkouts || 0}</Text>
+            <Text style={styles.statLabel}>Workouts</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Ionicons name="nutrition" size={24} color="#f39c12" />
+            <Text style={styles.statNumber}>{workoutStats?.totalDuration || 0}</Text>
+            <Text style={styles.statLabel}>Minutes</Text>
+          </View>
+        </View>
+        
+        {/* Next Workout */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Next Workout</Text>
+          <TouchableOpacity 
+            style={styles.workoutCard}
+            onPress={() => navigation.navigate('Workouts')}
+          >
+            <View style={styles.workoutCardContent}>
+              <Ionicons name="barbell-outline" size={32} color="#3498db" />
+              <View style={styles.workoutCardText}>
+                <Text style={styles.workoutCardTitle}>{nextWorkout}</Text>
+                <Text style={styles.workoutCardSubtitle}>30 minutes • Intermediate</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color="#95a5a6" />
+            </View>
+          </TouchableOpacity>
+        </View>
+        
+        {/* Recent Activity */}
+        {workoutHistory && workoutHistory.length > 0 && (
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Recent Activity</Text>
+            {workoutHistory.slice(0, 3).map((workout, index) => (
+              <View key={index} style={styles.activityItem}>
+                <View style={[styles.activityTypeIndicator, { backgroundColor: getWorkoutTypeColor(workout.type) }]} />
+                <View style={styles.activityContent}>
+                  <Text style={styles.activityTitle}>{workout.name}</Text>
+                  <Text style={styles.activitySubtitle}>
+                    {workout.duration} minutes • {formatDate(workout.timestamp)}
+                  </Text>
+                </View>
+                <Text style={styles.activityStatus}>Completed</Text>
+              </View>
+            ))}
+            <TouchableOpacity 
+              style={styles.viewAllButton}
+              onPress={() => navigation.navigate('Profile', { screen: 'ProgressTracking' })}
+            >
+              <Text style={styles.viewAllButtonText}>View All Activity</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        
+        {/* Quick Actions */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Quick Actions</Text>
+          <View style={styles.quickActionsContainer}>
+            <TouchableOpacity 
+              style={styles.quickActionButton}
+              onPress={() => navigation.navigate('Exercises')}
+            >
+              <Ionicons name="search" size={24} color="#3498db" />
+              <Text style={styles.quickActionText}>Find Exercise</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.quickActionButton}
+              onPress={() => navigation.navigate('Workouts')}
+            >
+              <Ionicons name="play" size={24} color="#3498db" />
+              <Text style={styles.quickActionText}>Start Workout</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.quickActionButton}
+              onPress={() => navigation.navigate('Nutrition')}
+            >
+              <Ionicons name="restaurant" size={24} color="#3498db" />
+              <Text style={styles.quickActionText}>Log Meal</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.quickActionButton}
+              onPress={() => navigation.navigate('Profile', { screen: 'ProgressTracking' })}
+            >
+              <Ionicons name="trending-up" size={24} color="#3498db" />
+              <Text style={styles.quickActionText}>View Progress</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        
+        {/* Featured Program */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Featured Program</Text>
+          <TouchableOpacity 
+            style={styles.featuredProgramCard}
+            onPress={() => navigation.navigate('Workouts')}
+          >
+            <View style={styles.featuredProgramBanner}>
+              <Text style={styles.featuredProgramBannerText}>Summer Body Challenge</Text>
+            </View>
+            <View style={styles.featuredProgramContent}>
+              <Text style={styles.featuredProgramDescription}>
+                30 days of progressive body-weight workouts to transform your physique.
+              </Text>
+              <View style={styles.featuredProgramStats}>
+                <Text style={styles.featuredProgramStat}>30 days</Text>
+                <Text style={styles.featuredProgramStat}>15-60 min/day</Text>
+                <Text style={styles.featuredProgramStat}>All levels</Text>
+              </View>
+              <TouchableOpacity style={styles.startButton}>
+                <Text style={styles.startButtonText}>Start Program</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </>
+    )}
+  </ScrollView>
+);
 };
 
 const styles = StyleSheet.create({

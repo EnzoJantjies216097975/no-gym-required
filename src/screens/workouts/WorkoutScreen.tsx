@@ -256,8 +256,21 @@ const workoutsData = [
   },
 ];
 
+type WorkoutProgramCardProps = {
+  program: {
+    id: string;
+    name: string;
+    category: string;
+    description: string;
+    duration: string;
+    frequency: string;
+    level: string;
+  };
+  onPress: (program: any) => void;
+};
+
 // Workout Program Card Component
-const WorkoutProgramCard = ({ program, onPress }) => {
+const WorkoutProgramCard = ({ program, onPress }: WorkoutProgramCardProps) => {
   return (
     <TouchableOpacity style={styles.programCard} onPress={() => onPress(program)}>
       <View style={styles.programHeader}>
@@ -852,4 +865,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
-  },
+  } // Remove the comma here if it exists
+});
+
+
+export default WorkoutScreen;

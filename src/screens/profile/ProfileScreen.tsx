@@ -483,7 +483,7 @@ const ProfileMainScreen = () => {
         </View>
       </View>
       
-      <View style={styles.actionsContaineractionsContainer}>
+      <View style={styles.actionsContainer}>
         <TouchableOpacity style={styles.actionButton}>
           <Ionicons name="download-outline" size={20} color="#3498db" />
           <Text style={styles.actionButtonText}>Export Data</Text>
