@@ -12,7 +12,8 @@ if (typeof global !== 'undefined') {
 // Log that the index.ts file is being executed
 console.log('Index.ts is executing, about to register root component.');
 
-
+// Register the root component
+registerRootComponent(App);
 
 // Log that registration is complete
 console.log('Root component registered successfully.');
@@ -20,4 +21,3 @@ console.log('Root component registered successfully.');
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
 // It also ensures that whether you load the app in Expo Go or in a native build,
 // the environment is set up appropriately
-

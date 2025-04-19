@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import ErrorBoundry from './src/components/common/ErrorBoundary';
+import ErrorBoundary from './src/components/common/ErrorBoundary';
 
 // Import screens
 import DashboardScreen from './src/screens/dashboard/DashboardScreen';
@@ -39,13 +39,13 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
-    <ErrorBoundry>
+    <ErrorBoundary>
       <SafeAreaProvider>
         <DataProvider>
           <NavigationContainer>
             <Tab.Navigator
               screenOptions={({ route }) => ({
-                tabBarIcon: (props) => <TabBarIcon route={route}{...props} />,
+                tabBarIcon: (props) => <TabBarIcon route={route} {...props} />,
                 tabBarActiveTintColor: '#3498db',
                 tabBarInactiveTintColor: 'gray',
                 headerShown: true
@@ -61,6 +61,6 @@ export default function App() {
           <StatusBar style="auto" />
         </DataProvider>
       </SafeAreaProvider>
-    </ErrorBoundry>
+    </ErrorBoundary>
   );
 };

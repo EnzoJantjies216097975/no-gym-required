@@ -1,5 +1,6 @@
 // src/store/DataContext.js
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { View, Text } from 'react-native';
 import dataManager from '../utils/dataManager';
 
 // Create the context
@@ -265,7 +266,7 @@ export const DataProvider = ({ children }) => {
 
   if (isLoading) {
     console.log('DataProvider is loading');
-    // Return a simple View instead of null
+    // Return a proper loading view
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text>Loading data...</Text>
