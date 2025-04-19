@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import ErrorBoundry from './src/components/ErrorBoundary';
+import ErrorBoundry from './src/components/common/ErrorBoundary';
 
 // Import screens
 import DashboardScreen from './src/screens/dashboard/DashboardScreen';

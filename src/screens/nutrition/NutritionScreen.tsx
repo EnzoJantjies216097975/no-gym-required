@@ -7,7 +7,7 @@ import {
   ScrollView, 
   TouchableOpacity, 
   Modal,
-  FlatList,
+ //FlatList,
   Switch
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -112,31 +112,37 @@ const mealData = [
   },
 ];
 
-// Nutrition Principle Card Component
-const NutritionPrincipleCard = ({ principle }) => {
-  return (
-    <View style={[styles.principleCard, { borderLeftColor: principle.color }]}>
-      <View style={styles.principleHeader}>
-        <Ionicons name={principle.icon} size={24} color={principle.color} />
-        <Text style={styles.principleTitle}>{principle.title}</Text>
-      </View>
-      <Text style={styles.principleDescription}>{principle.description}</Text>
-      <View style={styles.tipContainer}>
-        <Text style={styles.tipLabel}>Tip:</Text>
-        <Text style={styles.tipText}>{principle.tip}</Text>
-      </View>
-    </View>
-  );
+// Category color mapping
+const getCategoryColor = (category: string) => {
+  switch (category) {
+    case 'Protein': return '#e67e22';
+    case 'Vegetable': return '#2ecc71';
+    case 'Healthy Fat': return '#f1c40f';
+    case 'Carbohydrate': return '#3498db';
+    case 'Fruit': return '#9b59b6';
+    default: return '#bdc3c7';
+  }
 };
 
+// Nutrition Principle Card Component
+const NutritionPrincipleCard = ({ principle }: { principle: any }) => (
+  <View style={[styles.principleCard, { borderLeftColor: principle.color }]}>
+    <View style={styles.principleHeader}>
+      <Ionicons name={principle.icon} size={24} color={principle.color} />
+      <Text style={styles.principleTitle}>{principle.title}</Text>
+    </View>
+    <Text style={styles.principleDescription}>{principle.description}</Text>
+    <View style={styles.tipContainer}>
+      <Text style={styles.tipLabel}>Tip:</Text>
+      <Text style={styles.tipText}>{principle.tip}</Text>
+    </View>
+  </View>
+);
+
 // Meal Card Component
-const MealCard = ({ meal, onPress }) => {
-  // Count items by category
-  const categoryCounts = meal.items.reduce((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = 0;
-    }
-    acc[item.category]++;
+const MealCard = ({ meal, onPress }: { meal: any; onPress: (meal: any) => void }) => {
+  const categoryCounts = meal.items.reduce((acc: Record<string, number>, item: any) => {
+    acc[item.category] = (acc[item.category] || 0) + 1;
     return acc;
   }, {});
   
@@ -146,24 +152,13 @@ const MealCard = ({ meal, onPress }) => {
         <Text style={styles.mealType}>{meal.type}</Text>
         <Text style={styles.mealTime}>{meal.time}</Text>
       </View>
-      
       <View style={styles.mealCategories}>
         {Object.entries(categoryCounts).map(([category, count]) => (
-          <View 
-            key={category} 
-            style={[
-              styles.categoryBadge,
-              { backgroundColor: getCategoryColor(category) }
-            ]}
-          >
-            <Text style={styles.categoryText}>{category}: {count}</Text>
+          <View key={category} style={[styles.categoryBadge, { backgroundColor: getCategoryColor(category) }]}>
+            <Text style={styles.categoryText}>{category} ({count})</Text>
           </View>
         ))}
       </View>
-      
-      {meal.notes ? (
-        <Text style={styles.mealNotes}>{meal.notes}</Text>
-      ) : null}
     </TouchableOpacity>
   );
 };
@@ -350,27 +345,22 @@ const WaterTracker = ({ cups, onUpdate }) => {
   );
 };
 
-// Helper function to get color based on food category
-const getCategoryColor = (category) => {
-  switch (category) {
-    case 'Protein':
-      return '#3498db';
-    case 'Vegetable':
-      return '#2ecc71';
-    case 'Fruit':
-      return '#9b59b6';
-    case 'Healthy Fat':
-      return '#f1c40f';
-    case 'Carbohydrate':
-      return '#e67e22';
-    default:
-      return '#95a5a6';
-  }
-};
-
 // Nutrition Main Screen
 const NutritionMainScreen = () => {
-  const [mealData, setMealData] = useState(mealData);
+  const [mealData, setMealData] = useState([
+    {
+      // First day's data structure
+      meals: [],
+      habits: {
+        protein: false,
+        veggies: false,
+        hydration: false,
+        // Add other habit defaults as needed
+      },
+      water: 0
+      // Add other properties as needed
+    }
+  ]);
   const [currentDate] = useState(new Date());
   const [addMealModalVisible, setAddMealModalVisible] = useState(false);
   
@@ -381,55 +371,55 @@ const NutritionMainScreen = () => {
     // In a real app, this would add to the current day's meals
     setAddMealModalVisible(false);
     console.log('New meal added:', newMeal);
-    
+   
     // Sample implementation to update UI for demo
     const updatedMealData = [...mealData];
     updatedMealData[0].meals.push(newMeal);
     setMealData(updatedMealData);
   };
-  
+ 
   const handleToggleHabit = (habitName, value) => {
     // In a real app, this would update the current day's habits
     console.log('Habit toggled:', habitName, value);
-    
+   
     // Sample implementation to update UI for demo
     const updatedMealData = [...mealData];
     updatedMealData[0].habits[habitName] = value;
     setMealData(updatedMealData);
   };
-  
+ 
   const handleUpdateWater = (cups) => {
     // In a real app, this would update the current day's water intake
     console.log('Water updated:', cups);
-    
+   
     // Sample implementation to update UI for demo
     const updatedMealData = [...mealData];
     updatedMealData[0].water = cups;
     setMealData(updatedMealData);
   };
-  
+ 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.dateHeader}>
         <Text style={styles.dateText}>
-          {currentDate.toLocaleDateString('en-US', { 
+          {currentDate.toLocaleDateString('en-US', {
             weekday: 'long',
             month: 'long',
-            day: 'numeric' 
+            day: 'numeric'
           })}
         </Text>
       </View>
-      
-      <DailyHabits 
+     
+      <DailyHabits
         habits={dailyData.habits}
         onToggle={handleToggleHabit}
       />
-      
+     
       <WaterTracker
         cups={dailyData.water}
         onUpdate={handleUpdateWater}
       />
-      
+     
       <View style={styles.mealsContainer}>
         <View style={styles.mealsHeader}>
           <Text style={styles.mealsTitle}>Today's Meals</Text>
@@ -441,7 +431,7 @@ const NutritionMainScreen = () => {
             <Text style={styles.addMealButtonText}>Add Meal</Text>
           </TouchableOpacity>
         </View>
-        
+       
         {dailyData.meals.map(meal => (
           <MealCard
             key={meal.id}
@@ -450,18 +440,18 @@ const NutritionMainScreen = () => {
           />
         ))}
       </View>
-      
+     
       <View style={styles.principlesContainer}>
         <Text style={styles.principlesTitle}>Nutrition Principles</Text>
         <Text style={styles.principlesSubtitle}>
           Follow these key principles from the "No Gym Required" book to optimize your nutrition
         </Text>
-        
+       
         {nutritionPrinciples.map(principle => (
           <NutritionPrincipleCard key={principle.id} principle={principle} />
         ))}
       </View>
-      
+     
       <AddMealModal
         visible={addMealModalVisible}
         onClose={() => setAddMealModalVisible(false)}
@@ -475,24 +465,62 @@ const NutritionMainScreen = () => {
 const Stack = createStackNavigator();
 
 const NutritionScreen = () => {
+  const [selectedMeal, setSelectedMeal] = useState<any | null>(null);
+  const todayMeals = mealData[0]?.meals || [];
+
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="NutritionMain"
-        component={NutritionMainScreen}
-        options={{
-          title: 'Nutrition Tracker',
-          headerStyle: {
-            backgroundColor: '#3498db',
-          },
-          headerTintColor: '#fff',
-        }}
-      />
-    </Stack.Navigator>
+    <ScrollView style={styles.container}>
+      <Text style={styles.header}>Nutrition Principles</Text>
+      {nutritionPrinciples.map((principle) => (
+        <NutritionPrincipleCard key={principle.id} principle={principle} />
+      ))}
+
+      <Text style={styles.header}>Today's Meals</Text>
+      {todayMeals.map((meal) => (
+        <MealCard key={meal.id} meal={meal} onPress={setSelectedMeal} />
+      ))}
+
+      <Modal visible={!!selectedMeal} animationType="slide" onRequestClose={() => setSelectedMeal(null)}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>{selectedMeal?.type}</Text>
+          {selectedMeal?.items.map((item: any, index: number) => (
+            <Text key={index}>{`${item.name} - ${item.portion} (${item.category})`}</Text>
+          ))}
+          {selectedMeal?.notes ? <Text style={styles.notes}>Notes: {selectedMeal.notes}</Text> : null}
+          <TouchableOpacity onPress={() => setSelectedMeal(null)}>
+            <Text style={styles.closeButton}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+    </ScrollView>
   );
 };
 
+
 const styles = StyleSheet.create({
+  header: {
+    backgroundColor: '#ffffff',
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#2c3e50',
+  },
+  
+  headerIcon: {
+    padding: 8,
+  },
   container: {
     flex: 1,
     backgroundColor: '#f5f6fa',
@@ -839,6 +867,38 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    padding: 8,
+    zIndex: 10,
+  },
+  closeButtonText: {
+    fontSize: 16,
+    color: '#3498db',
+    fontWeight: '500',
+  },
+  notes: {
+    backgroundColor: '#f9f9f9',
+    padding: 16,
+    borderRadius: 8,
+    marginVertical: 10,
+    minHeight: 100,
+  },
+  notesInput: {
+    fontFamily: 'System',
+    fontSize: 14,
+    color: '#2c3e50',
+    textAlignVertical: 'top',
+  },
+  
+  notesLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#2c3e50',
+    marginBottom: 8,
   },
 });
 

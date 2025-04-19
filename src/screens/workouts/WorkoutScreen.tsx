@@ -8,7 +8,7 @@ import {
   TouchableOpacity, 
   FlatList,
   Modal,
-  SafeAreaView,
+  // SafeAreaView,
   Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -314,7 +314,7 @@ const WorkoutStartModal = ({ visible, workout, onClose, onStart }) => {
           <View style={styles.workoutInfoSection}>
             <Text style={styles.workoutInfoTitle}>What to expect:</Text>
             <Text style={styles.workoutInfoText}>
-              {workout?.description || "Get ready for a challenging workout that will push your limits and help you achieve your fitness goals."}
+              {workout?.description ?? "Get ready for a challenging workout that will push your limits and help you achieve your fitness goals."}
             </Text>
           </View>
           

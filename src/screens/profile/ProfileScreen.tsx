@@ -12,9 +12,40 @@ import {
   Modal
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import ProgressTrackingScreen from './ProgressTrackingScreen';
 import { useNavigation } from '@react-navigation/native';
+//import type { IconProps } from '@expo/vector-icons/build/createIconSet';
+
+type IoniconName = keyof typeof Ionicons.glyphMap;
+
+// Define navigation types
+type ProfileStackParamList = {
+  ProfileMain: undefined;
+  ProgressTracking: undefined;
+};
+
+type ProfileScreenNavigationProp = StackNavigationProp<ProfileStackParamList>;
+
+// Define measurement type
+type MeasurementHistory = {
+  date: string;
+  value: number;
+};
+
+type Measurement = {
+  current: number;
+  unit: string;
+  history: MeasurementHistory[];
+};
+
+// Define selected measurement type
+type SelectedMeasurementType = {
+  key: string;
+  title: string;
+  current: number;
+  unit: string;
+} | null;
 
 // Mock user data
 const userData = {
@@ -85,7 +116,7 @@ const userData = {
 };
 
 // Stat Card Component
-const StatCard = ({ icon, value, label }) => {
+const StatCard = ({ icon, value, label }: { icon: IoniconName; value: number; label: string }) => {
   return (
     <View style={styles.statCard}>
       <Ionicons name={icon} size={24} color="#3498db" />
@@ -96,14 +127,38 @@ const StatCard = ({ icon, value, label }) => {
 };
 
 // Measurement Card Component
-const MeasurementCard = ({ title, current, unit, trend, onPress }) => {
-  // Calculate trend icon and color
-  const trendIcon = trend > 0 ? 'arrow-up' : trend < 0 ? 'arrow-down' : 'remove';
-  const trendColor = trend > 0 ? 
-    (title === 'Weight' || title === 'Body Fat' || title === 'Waist' ? '#e74c3c' : '#2ecc71') : 
-    trend < 0 ? 
-    (title === 'Weight' || title === 'Body Fat' || title === 'Waist' ? '#2ecc71' : '#e74c3c') : 
-    '#7f8c8d';
+const MeasurementCard = ({ 
+  title, 
+  current, 
+  unit, 
+  trend, 
+  onPress 
+}: { 
+  title: string; 
+  current: number; 
+  unit: string; 
+  trend: number; 
+  onPress: () => void 
+}) => {
+  // Determine trend direction
+  const trendDirection = trend > 0 ? 'up' : trend < 0 ? 'down' : 'neutral';
+  
+  // Determine if this trend is positive for fitness (different logic for weight/fat vs muscle metrics)
+  const isPositiveTrend = (
+    (title === 'Weight' || title === 'Body Fat' || title === 'Waist') 
+      ? (trend < 0) 
+      : (trend > 0)
+  );
+  
+  // Set trend icon based on direction
+  const trendIcon = trendDirection === 'up' ? 'arrow-up' : 
+                    trendDirection === 'down' ? 'arrow-down' : 
+                    'remove';
+  
+  // Set trend color based on whether it's positive or not
+  const trendColor = trendDirection === 'neutral' ? '#7f8c8d' : 
+                    isPositiveTrend ? '#2ecc71' : 
+                    '#e74c3c';
   
   return (
     <TouchableOpacity style={styles.measurementCard} onPress={onPress}>
@@ -124,7 +179,19 @@ const MeasurementCard = ({ title, current, unit, trend, onPress }) => {
 };
 
 // Preference Item Component
-const PreferenceItem = ({ icon, label, description, value, onToggle }) => {
+const PreferenceItem = ({ 
+  icon, 
+  label, 
+  description, 
+  value, 
+  onToggle 
+}: { 
+  icon: IoniconName;
+  label: string; 
+  description?: string; 
+  value: boolean; 
+  onToggle: (value: boolean) => void 
+}) => {
   return (
     <View style={styles.preferenceItem}>
       <View style={styles.preferenceIcon}>
@@ -145,8 +212,18 @@ const PreferenceItem = ({ icon, label, description, value, onToggle }) => {
 };
 
 // Add Measurement Modal Component
-const AddMeasurementModal = ({ visible, measurement, onClose, onSave }) => {
-  const [value, setValue] = useState(measurement?.current?.toString() || '');
+const AddMeasurementModal = ({ 
+  visible, 
+  measurement, 
+  onClose, 
+  onSave 
+}: { 
+  visible: boolean; 
+  measurement: SelectedMeasurementType; 
+  onClose: () => void; 
+  onSave: (value: number) => void 
+}) => {
+  const [value, setValue] = useState(measurement?.current?.toString() ?? '');
   
   return (
     <Modal
@@ -165,7 +242,7 @@ const AddMeasurementModal = ({ visible, measurement, onClose, onSave }) => {
               value={value}
               onChangeText={setValue}
               keyboardType="numeric"
-              placeholder={`Enter ${measurement?.title.toLowerCase()}`}
+              placeholder={`Enter ${measurement?.title?.toLowerCase() ?? 'measurement'}`}
             />
             <Text style={styles.inputUnit}>{measurement?.unit}</Text>
           </View>
@@ -194,8 +271,24 @@ const AddMeasurementModal = ({ visible, measurement, onClose, onSave }) => {
   );
 };
 
+type UserGoals = {
+  workoutsPerWeek: number;
+  targetWeight: number;
+  targetBodyFat: number;
+};
+
 // Edit Goals Modal Component
-const EditGoalsModal = ({ visible, goals, onClose, onSave }) => {
+const EditGoalsModal = ({ 
+  visible, 
+  goals, 
+  onClose, 
+  onSave 
+}: { 
+  visible: boolean; 
+  goals: UserGoals; 
+  onClose: () => void; 
+  onSave: (goals: UserGoals) => void 
+}) => {
   const [workoutsPerWeek, setWorkoutsPerWeek] = useState(goals.workoutsPerWeek.toString());
   const [targetWeight, setTargetWeight] = useState(goals.targetWeight.toString());
   const [targetBodyFat, setTargetBodyFat] = useState(goals.targetBodyFat.toString());
@@ -263,14 +356,14 @@ const EditGoalsModal = ({ visible, goals, onClose, onSave }) => {
 
 // Profile Main Screen
 const ProfileMainScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
   const [user, setUser] = useState(userData);
-  const [selectedMeasurement, setSelectedMeasurement] = useState(null);
+  const [selectedMeasurement, setSelectedMeasurement] = useState<SelectedMeasurementType>(null);
   const [measurementModalVisible, setMeasurementModalVisible] = useState(false);
   const [goalsModalVisible, setGoalsModalVisible] = useState(false);
   
   // Calculate measurement trends (difference between current and previous)
-  const calculateTrend = (measurement) => {
+  const calculateTrend = (measurement: keyof typeof user.measurements) => {
     const history = user.measurements[measurement].history;
     if (history.length < 2) return 0;
     
@@ -279,7 +372,7 @@ const ProfileMainScreen = () => {
     return current - previous;
   };
   
-  const handleTogglePreference = (preferenceName, value) => {
+  const handleTogglePreference = (preferenceName: keyof typeof user.preferences, value: boolean) => {
     setUser({
       ...user,
       preferences: {
@@ -289,10 +382,10 @@ const ProfileMainScreen = () => {
     });
   };
   
-  const handleUpdateMeasurement = (value) => {
+  const handleUpdateMeasurement = (value: number) => {
     if (!selectedMeasurement) return;
     
-    const measurementKey = selectedMeasurement.key;
+    const measurementKey = selectedMeasurement.key as keyof typeof user.measurements;
     const newMeasurement = {
       ...user.measurements[measurementKey],
       current: value,
@@ -311,14 +404,14 @@ const ProfileMainScreen = () => {
     });
   };
   
-  const handleUpdateGoals = (newGoals) => {
+  const handleUpdateGoals = (newGoals: UserGoals) => {
     setUser({
       ...user,
       goals: newGoals
     });
   };
   
-  const openMeasurementModal = (key, title) => {
+  const openMeasurementModal = (key: keyof typeof user.measurements, title: string) => {
     setSelectedMeasurement({
       key,
       title,
@@ -495,13 +588,12 @@ const ProfileMainScreen = () => {
         </TouchableOpacity>
 
         <TouchableOpacity 
-        style={styles.actionButton}
-        onPress={() => navigation.navigate('ProgressTracking')}
+          style={styles.actionButton}
+          onPress={() => navigation.navigate('ProgressTracking')}
         >
-        <Ionicons name="trending-up" size={20} color="#3498db" />
-        <Text style={styles.actionButtonText}>Progress Tracking</Text>
+          <Ionicons name="trending-up" size={20} color="#3498db" />
+          <Text style={styles.actionButtonText}>Progress Tracking</Text>
         </TouchableOpacity>
-
         
         <TouchableOpacity style={[styles.actionButton, styles.logoutButton]}>
           <Ionicons name="log-out-outline" size={20} color="#e74c3c" />
@@ -527,7 +619,7 @@ const ProfileMainScreen = () => {
 };
 
 // Create Stack Navigator for Profile
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<ProfileStackParamList>();
 
 const ProfileScreen = () => {
   return (
@@ -543,7 +635,7 @@ const ProfileScreen = () => {
           headerTintColor: '#fff',
         }}
       />
-    <Stack.Screen
+      <Stack.Screen
         name="ProgressTracking"
         component={ProgressTrackingScreen}
         options={{

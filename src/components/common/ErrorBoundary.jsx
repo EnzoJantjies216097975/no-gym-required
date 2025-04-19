@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import PropTypes from 'prop-types';
 
 class ErrorBoundry extends React.Component {
     constructor(props) {
@@ -30,6 +31,10 @@ class ErrorBoundry extends React.Component {
         return this.props.children;
     }
 }
+
+ErrorBoundry.propTypes = {
+    children: PropTypes.node.isRequired,
+};
 
 const styles = StyleSheet.create({
     container: {

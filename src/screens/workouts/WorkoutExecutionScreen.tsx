@@ -48,6 +48,13 @@ const exerciseData = {
   },
 };
 
+type WorkoutLogEntry = {
+  exerciseName: string;
+  setNumber: number;
+  reps: number;
+  timestamp: string;
+};
+
 const WorkoutExecutionScreen = ({ route, navigation }) => {
   // Get workout data from navigation params
   const { workout } = route.params;
@@ -55,13 +62,14 @@ const WorkoutExecutionScreen = ({ route, navigation }) => {
   // State variables
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [currentSetIndex, setCurrentSetIndex] = useState(0);
-  const [timer, setTimer] = useState(0);
+  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
   const [isResting, setIsResting] = useState(false);
   const [restTimer, setRestTimer] = useState(0);
   const [showExerciseDetails, setShowExerciseDetails] = useState(false);
   const [showFinishModal, setShowFinishModal] = useState(false);
-  const [workoutLog, setWorkoutLog] = useState([]);
+  const [workoutLog, setWorkoutLog] = useState<WorkoutLogEntry[]>([]);
   const [isPaused, setIsPaused] = useState(false);
+
   
   // Refs
   const timerRef = useRef(null);
